@@ -2,15 +2,16 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShopContext } from '../context/ShopContext'
 import { assets } from '../assets/assets'
+import RelatedProducts from '../components/RelatedProducts'
 
 const Product = () => {
 
   const {productId}=useParams()
-  const {products,currency}=useContext(ShopContext)
+  const {products,currency,addToCart}=useContext(ShopContext)
   const [productData,setProductData]=useState(false)
   const [image,setImage]=useState('')
   const [size,setSize]=useState('')
-  const [quantity,setQuantity]=useState(1)
+  // const [quantity,setQuantity]=useState(1)
 
   const fetchProductData=async ()=>{
     products.map((item)=>{
@@ -70,7 +71,7 @@ const Product = () => {
                 }
               </div>
           </div>
-          <button className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART</button>
+          <button onClick={()=>addToCart(productData._id,size)} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART</button>
           <hr className='mt-8 sm:w-4/5'/>
           <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
             <p>100% Original Product.</p>
@@ -88,14 +89,14 @@ const Product = () => {
           <p className='border px-5 py-3 text-sm'>Reviews (122)</p>
         </div>
         <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
-          <p>Modern eCommerce platform built with the MERN stack, offering a fast and responsive shopping experience.
-Users can browse products, view detailed product pages, add items to cart, and place secure orders online.</p>
-          <p>Includes user authentication, product management, search functionality, and responsive UI for all devices.
-Designed with scalable architecture and clean user interface to deliver smooth performance and easy navigation.</p>
+          <p>We are offering stylish and comfortable dresses for every occasion. Explore a wide range of colors, trendy designs, and sizes from XS to XXL to match your perfect style. Our collection includes quality materials such as cotton, chiffon, polyester, rayon, and silk blends for both comfort and durability.</p>
+          <p>Please note that dress color, size, fit, and material details may slightly vary depending on the manufacturer and product batch. We are committed to providing fashionable, high-quality outfits at affordable prices.</p>
         </div>
       </div>
 
       {/*Related Products Section */}
+
+      <RelatedProducts category={productData.category} subCategory={productData.subCategory}/>
       
 
     </div>

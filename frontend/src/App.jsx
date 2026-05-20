@@ -15,12 +15,19 @@ import Footer from './components/Footer.jsx'
 import { ShopContext } from './context/ShopContext.jsx'
 import SearchBar from './components/SearchBar.jsx'
 
+//React toastify : https://www.npmjs.com/package/react-toastify?activeTab=dependencies  
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+ 
 
 // className='px-4 sm:px-[5vw] md:px-[7vw]  lg:px-[9vw]'
 
 const App = () => {
   return (
     <div className='px-4 sm:px-[5vw] md:px-[7vw]  lg:px-[9vw]' >
+      <ToastContainer/>
       <Navbar/>
       <SearchBar/>
       <Routes>
