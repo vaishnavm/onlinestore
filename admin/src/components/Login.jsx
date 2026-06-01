@@ -10,20 +10,23 @@ const Login = ({setToken}) => {
     const [password,setPassword]=useState('')
 
     const onSubmiHandler=async (e)=>{
+        e.preventDefault()
         try{
-                e.preventDefault()
                 const response=await axios.post(backendUrl + '/api/user/admin' ,{email,password})
-                // console.log(response)
+                //console.log(response?.data)
 
-                if(response.data.success){
+                if(response?.data?.success){
                     setToken(response.data.token)
+                    // toast.success('Login successful')
                 }else{
-                    toast.error(response.data.message)
-                    console.log("error")
+                    const msg = response?.data?.message || 'Login failed'
+                    toast.error(msg)
+                    // console.log('Login error:', msg)
                 }
         }catch(error){
-                console.log(error)
-                toast.error(error.message)
+                console.log('Login request failed:', error)
+                const msg = error?.response?.data?.message || error.message || 'Login failed'
+                toast.error(msg)
         }
 
     }
