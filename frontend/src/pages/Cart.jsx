@@ -11,6 +11,9 @@ const Cart = () => {
   const [cartData,setCartData]=useState([])
 
   useEffect(()=>{
+
+    if(products.length>0)
+    {
     const tempData=[]
 
     for(const items in cartItems){
@@ -27,9 +30,10 @@ const Cart = () => {
     }
 
     setCartData(tempData)
+  }
 
 
-  },[cartItems])
+  },[cartItems,products])
 
   return (
     <div className='border-t pt-14'>
