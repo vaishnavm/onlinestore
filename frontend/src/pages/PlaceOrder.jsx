@@ -39,7 +39,7 @@ const PlaceOrder = () => {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
-  const onSumbitHandler = async (event) => {
+  const onSubmitHandler = async (event) => {
     event.preventDefault();
 
     try {
@@ -75,6 +75,11 @@ const PlaceOrder = () => {
         amount: getCartAmount() + delivery_fee,
       };
 
+      console.log("Backend URL:", backendUrl);
+      console.log("Payment Method:", method);
+      console.log("Order Data:", orderData);
+      console.log("Auth Token:", token ? "Present" : "Missing");
+
       switch (method) {
         //API calls for COD
 
@@ -88,18 +93,48 @@ const PlaceOrder = () => {
           }
           break;
 
+        case "stripe":
+          console.log("Stripe method selected");
+          const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } });
+          console.log("Stripe Response Data:", responseStripe.data);
+          
+          if (responseStripe.data.success) {
+            const { session_url } = responseStripe.data;
+            console.log("Redirecting to Stripe checkout:", session_url);
+            window.location.replace(session_url);
+          } else {
+            console.error("Stripe order failed:", responseStripe.data.message);
+            toast.error(responseStripe.data.message);
+          }
+          break;
+
         default:
+          console.log("default");
           break;
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.message)
+      console.error("Full Error Object:", error);
+      console.error("Error Status:", error.response?.status);
+      console.error("Error Data:", error.response?.data);
+      console.error("Error Message:", error.message);
+      
+      if (error.code === 'ECONNABORTED') {
+        toast.error("Request timeout - Server not responding");
+      } else if (error.response?.status === 404) {
+        toast.error("API endpoint not found - Check backend routes");
+      } else if (error.response?.status === 500) {
+        toast.error("Server error: " + (error.response?.data?.message || "Internal Server Error"));
+      } else if (!error.response) {
+        toast.error("Network error - Cannot connect to backend. Check backend URL: " + backendUrl);
+      } else {
+        toast.error(error.response?.data?.message || error.message);
+      }
     }
   };
 
   return (
     <form
-      onSubmit={onSumbitHandler}
+      onSubmit={onSubmitHandler}
       className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t"
     >
       {/* Left side */}
