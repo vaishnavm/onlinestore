@@ -78,7 +78,7 @@ const Orders = ({token}) => {
             <div>
               <p className='text-sm sm:text-[15px]'>Items : {order.items.length}</p>
               <p className='mt-3'>Method : {order.paymentMethod}</p>
-              <p className=''>Payment : {order.paymet ? 'Done' : 'Pending'}</p>
+              <p className=''>Payment : {order.payment ? 'Done' : 'Pending'}</p>
               <p className=''>Date : {new Date(order.date).toLocaleDateString()}</p>
             </div>
             <p className='text-sm sm:text-[15px]'>{currency}{order.amount}</p>

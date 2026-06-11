@@ -184,6 +184,7 @@ const verifyRazorpay=async (req,res)=>{
                 await userModel.findByIdAndUpdate(userId,{cartData:{}})
                 res.json({success:true ,message: "Payment Successfull"}) 
             }else{
+                await orderModel.findByIdAndDelete(orderId)
                 res.json({success:false , message: "Payment Failed"})
             }
 
