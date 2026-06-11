@@ -49,8 +49,8 @@ try {
     const {userId,items,amount,address}=req.body
     const {origin}=req.headers
 
-    console.log("Stripe Request - Origin:", origin);
-    console.log("Stripe Request - Items:", items);
+    // console.log("Stripe Request - Origin:", origin);
+    // console.log("Stripe Request - Items:", items);
 
     const orderData={
             userId,
@@ -63,7 +63,7 @@ try {
         }
         const newOrder=new orderModel(orderData)
         await newOrder.save()
-        console.log("Order created:", newOrder._id);
+        // console.log("Order created:", newOrder._id);
 
         const line_items=items.map((item)=>({
             price_data :{
@@ -87,7 +87,7 @@ try {
             quantity:1
         })
 
-        console.log("Line items for Stripe:", JSON.stringify(line_items));
+        // console.log("Line items for Stripe:", JSON.stringify(line_items));
 
         const session= await stripe.checkout.sessions.create({
             success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
@@ -96,8 +96,8 @@ try {
             mode:'payment'
         })
 
-        console.log("Stripe Session Created:", session);
-        console.log("Session URL:", session.url);
+        // console.log("Stripe Session Created:", session);
+        // console.log("Session URL:", session.url);
 
         if(!session.url) {
             throw new Error("Stripe session URL not generated");
@@ -111,6 +111,24 @@ try {
 }
 }
 
+//Verify stripe
+
+const verifyStripe=async (req,res)=>{
+    const {orderId,success,userId}=req.body
+    try {
+        if(success==="true"){
+            await orderModel.findByIdAndUpdate(orderId,{payment:true})
+            await userModel.findByIdAndUpdate(userId,{cartData:{}})
+            res.json({success:true})
+        }else{
+            await orderModel.findByIdAndDelete(orderId)
+            res.json({success:false})
+        }
+    } catch (error) {
+         console.log(error);
+        res.json({success:false , message:error.message})
+    }
+}
 //placing orders using Razorpay method 
 
 const placeOrderRazorpay = async (req,res)=>{
@@ -158,4 +176,4 @@ const updateStatus = async (req,res)=>{
 }
 
 
-export {placeOrder,placeOrderStripe,placeOrderRazorpay,allOrders,userOrders,updateStatus}
+export {placeOrder,placeOrderStripe,placeOrderRazorpay,allOrders,userOrders,updateStatus,verifyStripe}

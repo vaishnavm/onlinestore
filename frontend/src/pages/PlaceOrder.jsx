@@ -75,10 +75,10 @@ const PlaceOrder = () => {
         amount: getCartAmount() + delivery_fee,
       };
 
-      console.log("Backend URL:", backendUrl);
-      console.log("Payment Method:", method);
-      console.log("Order Data:", orderData);
-      console.log("Auth Token:", token ? "Present" : "Missing");
+      // console.log("Backend URL:", backendUrl);
+      // console.log("Payment Method:", method);
+      // console.log("Order Data:", orderData);
+      // console.log("Auth Token:", token ? "Present" : "Missing");
 
       switch (method) {
         //API calls for COD
@@ -94,9 +94,9 @@ const PlaceOrder = () => {
           break;
 
         case "stripe":
-          console.log("Stripe method selected");
+          // console.log("Stripe method selected");
           const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } });
-          console.log("Stripe Response Data:", responseStripe.data);
+          // console.log("Stripe Response Data:", responseStripe.data);
           
           if (responseStripe.data.success) {
             const { session_url } = responseStripe.data;

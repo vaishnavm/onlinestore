@@ -46,7 +46,7 @@ const Cart = () => {
           cartData.map((item,index)=>{
             const productData=products.find((product)=>product._id===item._id)
             return(
-              <div className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
+              <div key={`${item._id}-${item.size}`} className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
                 <div className='flex items-start gap-6'>
                   <img className='w-16 sm:w-20' src={productData.image[0]} alt="" />
                   <div>
