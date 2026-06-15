@@ -162,7 +162,7 @@ const placeOrderRazorpay = async (req,res)=>{
 
             if(error){
                 console.log(error)
-                res.json({success:false, message:error})
+                return res.json({success:false, message:error})
             }
 
             res.json({success:true, order})
@@ -175,16 +175,19 @@ const placeOrderRazorpay = async (req,res)=>{
 
 const verifyRazorpay=async (req,res)=>{
     try{
-            const {userId,razorpay_order_id}=req.body
+            const {userId, razorpay_order_id, orderId}=req.body
             const orderInfo= await razorpayInstance.orders.fetch(razorpay_order_id)
-            // console.log(orderInfo)
+
+            // Use the orderId passed from frontend, or fallback to the receipt from Razorpay
+            const mongoOrderId = orderId || orderInfo.receipt;
 
             if(orderInfo.status === 'paid'){
-                await orderModel.findByIdAndUpdate(orderInfo.receipt,{payment : true})
+                await orderModel.findByIdAndUpdate(mongoOrderId,{payment : true})
                 await userModel.findByIdAndUpdate(userId,{cartData:{}})
                 res.json({success:true ,message: "Payment Successfull"}) 
             }else{
-                await orderModel.findByIdAndDelete(orderId)
+                // Delete using the MongoDB internal _id
+                await orderModel.findByIdAndDelete(mongoOrderId)
                 res.json({success:false , message: "Payment Failed"})
             }
 

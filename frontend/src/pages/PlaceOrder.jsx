@@ -51,17 +51,27 @@ const PlaceOrder = () => {
       handler: async (response)=>{
         console.log(response)
         try {
-          const {data}=await axios.post(backendUrl+'/api/order/verifyRazorpay',response,{headers: {token}})
+          const {data}=await axios.post(backendUrl+'/api/order/verifyRazorpay',{...response, orderId: order.receipt},{headers: {token}})
           if(data.success){
             navigate('/orders')
             setCartItems({})
-          }else{
-            navigate('/cart')
           }
+          
         } catch (error) {
           console.log(error)
           toast.error(error)
         }
+      }
+    }
+    // Add a check for when the user closes the payment modal
+    options.modal = {
+      ondismiss: async () => {
+        try {
+          await axios.post(backendUrl + '/api/order/verifyRazorpay', { razorpay_order_id: order.id, orderId: order.receipt }, { headers: { token } });
+        } catch (error) {
+          console.log(error);
+        }
+        toast.error("Payment cancelled. Order not placed.");
       }
     }
     const rzp=window.Razorpay(options)
