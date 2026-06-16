@@ -15,7 +15,7 @@ const port = process.env.PORT || 4000
 connectDB()
 connectCloudinary()
 // cloudinary.api.ping()   ***cloudinary checking
-.then((result) => console.log(result))
+.then((result) => console.log("Cloudinary :" + result))
 .catch((err) => console.log(err));
 
 //Middlewares
